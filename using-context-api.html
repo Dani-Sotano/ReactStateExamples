@@ -1,0 +1,79 @@
+<body>
+    <div id='root'>
+        <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+        <script type="text/babel">
+            const rootElement = document.getElementById('root')
+
+            function FirstLevelComponent(props) {
+                let value = "";
+
+                const { count, update  } = React.useContext(CountContext);
+
+                const handleIncrease = (event) => {
+                    event.preventDefault();
+                    update({ type: ACTIONS.INCREASE, value: value })
+                    let element = document.querySelector("input")
+                    element.value = "";
+                }
+
+                const handleDecrease = (event) => {
+                    event.preventDefault();
+                    update({ type: ACTIONS.DECREASE, value: value })
+                    let element = document.querySelector("input")
+                    element.value = "";
+                }
+
+                const handleChange = (event) => {
+                    value = Number(event.target.value);
+                };
+
+                return (
+                    <div>
+                        <div>Your base value is {count}</div>
+                        <input onChange={handleChange} />
+                        <button onClick={handleIncrease}> Increase </button>
+                        <button onClick={handleDecrease}> Decrease </button>
+
+                        </div>
+                )
+            }
+
+            const CountContext = React.createContext();
+
+
+            const ACTIONS = {
+                INCREASE: 'increase-count',
+                DECREASE: 'decrease-count'
+            }
+
+            function Main() {
+
+                const [count, setCount] = React.useState(0)
+
+                function update(action){
+                    if (action.type === ACTIONS.INCREASE) {
+                        setCount(count + Number(action.value)) 
+                    } else if (action.type === ACTIONS.DECREASE) {
+                        setCount(count - Number(action.value)) 
+                    }
+                }  
+
+                return (
+                    <CountContext.Provider value={{count: count, update: update}}>
+                        {count}
+                        <FirstLevelComponent />
+                    </CountContext.Provider>
+                )
+            };
+
+            function render() {
+                ReactDOM.render(<Main />, rootElement)
+            }
+
+            render();
+
+        </script>
+    </div>
+</body>

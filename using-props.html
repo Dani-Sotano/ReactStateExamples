@@ -1,0 +1,60 @@
+<body>
+    <div id='root'>
+        <script src="https://unpkg.com/react@16.7.0/umd/react.production.min.js"></script>
+        <script src="https://unpkg.com/react-dom@16.7.0/umd/react-dom.production.min.js"></script>
+        <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+        <script type="text/babel">
+            const rootElement = document.getElementById('root')
+
+            function FirstLevelComponent(props) {
+                let value = "";
+
+                const handleOnClick = (event) => {
+                    event.preventDefault();
+                    props.update(value)
+                    let element = document.querySelector("input")
+                    element.value = "";
+                }
+
+                const handleChange = (event) => {
+                    value = Number(event.target.value);
+                };
+
+                return (
+                    <div>
+                        <div>Your base value is {props.value}</div>
+                        <input onChange={handleChange} />
+                        <button onClick={handleOnClick}> Update </button>
+                    </div>
+                )
+            }
+
+            let count = 1;
+
+            function Main() {
+                function addToCount(value) {
+                    count = count + Number(value);
+                    render();
+                }
+                return (
+                    <>
+                        {count}
+                        <FirstLevelComponent
+                            value={count}
+                            update={addToCount}>
+                        </FirstLevelComponent>
+                    </>
+
+                )
+
+            };
+
+            function render() {
+                ReactDOM.render(<Main />, rootElement)
+            }
+
+            render();
+
+        </script>
+    </div>
+</body>

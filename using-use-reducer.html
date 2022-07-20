@@ -1,0 +1,79 @@
+<body>
+    <div id='root'>
+        <script src="https://unpkg.com/react@16.12.0/umd/react.development.js"></script>
+        <script src="https://unpkg.com/react-dom@16.12.0/umd/react-dom.development.js"></script>
+        <script src="https://unpkg.com/@babel/standalone@7.8.3/babel.js"></script>
+        <script type="text/babel">
+            const rootElement = document.getElementById('root')
+
+            function FirstLevelComponent(props) {
+                let value = "";
+
+                const handleIncrease = (event) => {
+                    event.preventDefault();
+                    props.update({ type: ACTIONS.INCREASE, value: value })
+                    let element = document.querySelector("input")
+                    element.value = "";
+                }
+
+                const handleDecrease = (event) => {
+                    event.preventDefault();
+                    props.update({ type: ACTIONS.DECREASE, value: value })
+                    let element = document.querySelector("input")
+                    element.value = "";
+                }
+
+                const handleChange = (event) => {
+                    value = Number(event.target.value);
+                };
+
+                return (
+                    <div>
+                        <div>Your base value is {props.value}</div>
+                        <input onChange={handleChange} />
+                        <button onClick={handleIncrease}> Increase </button>
+                        <button onClick={handleDecrease}> Decrease </button>
+                    </div>
+                )
+            }
+
+            const ACTIONS = {
+                INCREASE: 'increase-count',
+                DECREASE: 'decrease-count'
+            }
+
+            function Main() {
+
+                const [state, dispatch] = React.useReducer(reducer, {
+                    count: 1
+                });
+
+                function reducer(state, action) {
+                    if (action.type === ACTIONS.INCREASE) {
+                        return { ...state, count: state.count + Number(action.value) }
+                    } else if (action.type === ACTIONS.DECREASE) {
+                        return { ...state, count: state.count - Number(action.value) }
+                    }
+                }
+
+
+                return (
+                    <>
+                        {state.count}
+                        <FirstLevelComponent
+                            value={state.count}
+                            update={dispatch}>
+                        </FirstLevelComponent>
+                    </>
+                )
+            };
+
+            function render() {
+                ReactDOM.render(<Main />, rootElement)
+            }
+
+            render();
+
+        </script>
+    </div>
+</body>
